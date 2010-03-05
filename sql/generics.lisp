@@ -72,7 +72,7 @@ represented by SLOTS are initialised from the values of the
 supplied slots with other attributes having default
 values. Furthermore, OBJECT becomes associated with DATABASE."))
 
-(defgeneric update-records-from-instance (object &key database this-class)
+(defgeneric update-records-from-instance (object &key database)
   (:documentation
    "Using an instance of a View Class, OBJECT, update the table
 that stores its instance data. DATABASE defaults to
