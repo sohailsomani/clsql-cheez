@@ -587,7 +587,7 @@
 				       :flatp t :caching nil))))
 	    (setf (slot-value sl 'title) "subloc-1")
 	    (setf (slot-value sl 'loc) "a subloc")
-	    (clsql:update-record-from-slot sl '(title loc))
+	    (clsql:update-record-from-slots sl '(title loc))
 	    (print-fresh-subloc)))))
   "10 subloc-1 a subloc"
   "10 Altered subloc title Altered loc"
@@ -745,22 +745,22 @@
 	   (print-subloc (sl)
 	     (format nil "~a: ~a"
 		     (slot-value sl 'node-id) (slot-value sl 'loc))))
-	(with-dataset *ds-nodes*
-      (values
-	(print-loc loc2)
-	(print-subloc subloc2)
-	(progn
-	  (clsql:update-records [node]
-				:av-pairs '(([title] "altered title"))
-				:where [= [node-id] 9])
-	  (clsql:update-slot-from-record loc2 'title)
-	  (print-loc loc2))
-	(progn
-	  (clsql:update-records [subloc]
-				:av-pairs '(([loc] "altered loc"))
-				:where [= [subloc-id] 11])
-	  (clsql:update-slot-from-record subloc2 'loc)
-	  (print-subloc subloc2)))))
+      (with-dataset *ds-nodes*
+	(values
+	  (print-loc loc2)
+	  (print-subloc subloc2)
+	  (progn
+	    (clsql:update-records [node]
+				  :av-pairs '(([title] "altered title"))
+				  :where [= [node-id] 9])
+	    (clsql:update-slot-from-record loc2 'title)
+	    (print-loc loc2))
+	  (progn
+	    (clsql:update-records [subloc]
+				  :av-pairs '(([loc] "altered loc"))
+				  :where [= [subloc-id] 11])
+	    (clsql:update-slot-from-record subloc2 'loc)
+	    (print-subloc subloc2)))))
   "9: location-2" "11: second subloc"
   "9: altered title" "11: altered loc")
 
