@@ -185,15 +185,6 @@
 	     (list (sql-expression :attribute (view-class-slot-column slot))
 		   (db-value-from-slot slot value database))))
 
-	 (get-pk (pk-slot)
-	   (if (member :auto-increment (listify (view-class-slot-db-constraints pk-slot)))
-	       (setf (slot-value obj (slot-definition-name pk-slot))
-		     ;;this should probably be moved into it's own function.
-		     (car (query "SELECT LAST_INSERT_ID();"
-				 :flatp t :field-names nil
-				 :database database)))
-	       (slot-value obj (slot-definition-name pk-slot))))
-
 	 (save-slots-for-class (view-class stored-slot-defs)
 	   (let ((pk-slot (car (keyslots-for-class view-class)))
 		 (table (sql-expression :table (view-table view-class)))
@@ -234,15 +225,21 @@
 					  :this-class view-class)
 				  :database database)
 		  (when (and pk-slot (not pk))
-		    (setf pk (slot-value obj (slot-definition-name pk-slot)))))
+		    (setf pk (slot-value obj (slot-definition-name pk-slot))))
+		  pk)
 		 (t
 		  (insert-records :into table
 				  :av-pairs av-pairs
 				  :database database)
-		  (when pk-slot
-		    (setf pk (or pk (get-pk pk-slot)))
+		  (when (and pk-slot (not pk))
+		    (setf pk (if (member :auto-increment (listify (view-class-slot-db-constraints pk-slot)))
+				 (setf (slot-value obj (slot-definition-name pk-slot))
+				       (database-last-autoincrement-id database
+								       table
+								       pk-slot))))
 
-		    )))))))
+		    )
+		  pk))))))
 
 
       (save-slots-for-class

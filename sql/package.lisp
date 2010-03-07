@@ -1,3 +1,4 @@
+
 ;;;; -*- Mode: LISP; Syntax: ANSI-Common-Lisp; Base: 10 -*-
 ;;;; *************************************************************************
 ;;;; FILE IDENTIFICATION
@@ -129,6 +130,7 @@
      #:database-list-sequences
      #:database-sequence-last
      #:database-sequence-exists-p
+     #:database-last-auto-increment-id
      #:database-list-attributes
      #:database-attribute-type
      #:database-type-library-loaded

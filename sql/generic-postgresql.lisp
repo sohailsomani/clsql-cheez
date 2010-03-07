@@ -218,7 +218,7 @@
 (defmethod database-set-sequence-position (name (position integer)
                                                 (database generic-postgresql-database))
   (values
-   (parse-integer
+    (parse-integer
     (caar
      (database-query
       (format nil "SELECT SETVAL ('~A', ~A)" name position)
@@ -240,6 +240,20 @@
      (database-query
       (concatenate 'string "SELECT LAST_VALUE FROM " sequence-name)
       database nil nil)))))
+
+(defmethod database-last-auto-increment-id ((database generic-postgresql-database) table column)
+  (typecase table
+    (sql-ident (setf table (slot-value table 'name)))
+    (standard-db-class (setf table (view-table table))))
+  (typecase column
+    (sql-ident (setf column (slot-value column 'name)))
+    (view-class-slot-definition-mixin
+       (setf column (view-class-slot-column column))))
+  (let ((seq-name (format nil "~a_~a_seq" table column)))
+    (first (clsql:query (format nil "SELECT currval ('~a')" seq-name)
+		 :flatp t
+		 :database database
+		 :result-types '(integer)))))
 
 (defun postgresql-database-list (connection-spec type)
   (destructuring-bind (host name &rest other-args) connection-spec
@@ -380,3 +394,5 @@
 (defmethod db-type-has-prepared-stmt? ((db-type (eql :postgresql-socket)))
   t)
 
+(defmethod db-type-has-auto-increment? ((db-type (eql :postgresql)))
+  t)
