@@ -234,7 +234,7 @@
 		  (when (and pk-slot (not pk))
 		    (setf pk (if (member :auto-increment (listify (view-class-slot-db-constraints pk-slot)))
 				 (setf (slot-value obj (slot-definition-name pk-slot))
-				       (database-last-autoincrement-id database
+				       (database-last-auto-increment-id database
 								       table
 								       pk-slot))))
 
