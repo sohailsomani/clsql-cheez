@@ -1,3 +1,9 @@
+2010-05-04  Nathan Bird  <nathan@acceleration.net>
+	* odbc/: tweaks to make it play better with old versions of
+	FreeTDS
+	* sql/oodml.lisp: Make update-records-from* functions go through a
+	shared code path
+
 2010-04-20  Kevin Rosenberg <kevin@rosenberg.net>
 	* Version 5.1.0 [DEPENDENCY UPGRADE: UFFI 2.x needed]
 	* clsql-uffi.asd: Depend on UFFI version >= 2.0
@@ -17,9 +23,6 @@
 	* Version 5.0.5
 	* sql/fdml.lisp: Fix DO-QUERY to actually return the last value of
 	the body.
-
-2010-03-04  Nathan Bird  <nathan@acceleration.net>
-	* odbc/: tweaks to make it play better with old versions of FreeTDS
 
 2010-03-02  Nathan Bird  <nathan@acceleration.net>
 	* doc/: Added a README on how to build doc; now builds on Ubuntu.
