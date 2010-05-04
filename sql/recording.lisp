@@ -146,10 +146,13 @@ returned is that used for recording SQL commands or results."
     (with-slots (command-recording-stream)
         database
       (when command-recording-stream
-        (format command-recording-stream "~&;; ~A ~A => ~A~%"
-                (iso-timestring (get-time))
-                (database-name database)
-                expr)))))
+	(restart-case
+	    (format command-recording-stream "~&;; ~A ~A => ~A~%"
+		    (iso-timestring (get-time))
+		    (database-name database)
+		    expr)
+	  (disable-sql-recording ()
+	    (clsql-sys:stop-sql-recording :database database)))))))
 
 (defun record-sql-result (res database)
   (when database
