@@ -239,6 +239,12 @@
            (error "Unable to update records"))))
   (values))
 
+(defgeneric last-insert-id-query (database)
+  (:documentation "Return select statement to use to get the last inserted id"))
+
+(defmethod last-insert-id-query (database)
+  "SELECT LAST_INSERT_ID();")
+
 (defmethod update-records-from-instance ((obj standard-db-object)
                                          &key database this-class)
   (let ((database (or database (view-database obj) *default-database*))
@@ -292,7 +298,7 @@
                                 (member :auto-increment (view-class-slot-db-constraints pk-slot)))
                            (eql (view-class-slot-db-constraints pk-slot) :auto-increment))
                        (unless pk
-                         (let ((db-pk (car (query "SELECT LAST_INSERT_ID();"
+                         (let ((db-pk (car (query (last-insert-id-query database)
                                                   :flatp t :field-names nil
                                                   :database database))))
                            (setf pk db-pk

@@ -324,3 +324,18 @@
 
 (defmethod db-type-has-boolean-where? ((db-type (eql :sqlite3)))
   nil)
+
+;;; http://lists.b9.com/pipermail/clsql-help/2006-January/000552.html
+(defmethod database-get-type-specifier ((type (eql 'integer))
+                                                  args database
+                                                  (db-type (eql :sqlite3)))
+  (declare (ignore database db-type))
+  (if args
+      (format nil "INTEGER(~A)" (car args))
+    "INTEGER"))
+
+(defmethod database-pkey-constraint ((class clsql-sys::standard-db-class)
+                                     (database clsql-sqlite3::database)))
+
+(defmethod clsql-sys::last-insert-id-query ((database clsql-sqlite3:sqlite3-database))
+  "select last_insert_rowid();")
